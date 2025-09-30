@@ -3,14 +3,19 @@ using UnityEngine.SceneManagement;
 
 /// <summary>
 /// GameManager Singleton que persiste entre escenas.
-/// Gestiona el estado del juego, la carga de niveles y los datos de transición.
+/// Gestiona el estado del juego, la carga de niveles y los datos de transiciï¿½n.
 /// </summary>
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    // Almacenará el ID del punto de spawn para la siguiente escena.
+    // --- Spawn points ---
     private string nextSpawnPointId;
+
+    // --- Datos persistentes del jugador ---
+    public int lightEssence { get; private set; }
+    public int darkEssence { get; private set; }
 
     private void Awake()
     {
@@ -22,25 +27,27 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
+        }
+        
+        if (GameManager.Instance == null)
+        {
+            Instantiate(Resources.Load<GameObject>("Prefabs/GameManager"));
         }
     }
 
-    /// <summary>
-    /// Método llamado por los portales para registrar a dónde debe ir el jugador.
-    /// </summary>
+    // -------------------------------
+    // LÃ³gica de spawn
+    // -------------------------------
     public void SetNextSpawnPoint(string spawnId)
     {
         nextSpawnPointId = spawnId;
     }
 
-    /// <summary>
-    /// Método llamado por el PlayerSpawner de la nueva escena para mover al jugador.
-    /// Devuelve el ID y lo limpia para evitar reúsos accidentales.
-    /// </summary>
     public string GetAndClearNextSpawnPoint()
     {
         string id = nextSpawnPointId;
-        nextSpawnPointId = null; // Limpiamos el ID para que no se vuelva a usar.
+        nextSpawnPointId = null; 
         return id;
     }
 
@@ -48,5 +55,20 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
         Debug.Log($"Cargando escena: {sceneName}");
+    }
+
+    // -------------------------------
+    // LÃ³gica de recursos del jugador
+    // -------------------------------
+    public void SaveMaterials(PlayerMaterialsCounter counter)
+    {
+        lightEssence = counter.lightEssence;
+        darkEssence = counter.darkEssence;
+    }
+
+    public void LoadMaterials(PlayerMaterialsCounter counter)
+    {
+        counter.lightEssence = lightEssence;
+        counter.darkEssence = darkEssence;
     }
 }

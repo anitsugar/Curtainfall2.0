@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 
 /// Controla el movimiento, las acciones y el estado del jugador.
@@ -13,6 +14,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 8f;
+    
+    private PlayerMaterialsCounter materialsCounter;
 
     private Rigidbody rb;
     private Vector2 moveInput;
@@ -90,6 +93,16 @@ public class PlayerController : MonoBehaviour
     private void Die()
     {
         Debug.Log("Player has died.");
-        // Aquí puedes agregar lógica para deshabilitar el jugador
+
+        PlayerMaterialsCounter counter = GetComponent<PlayerMaterialsCounter>();
+        Debug.Log("Counter encontrado? " + (counter != null));
+        Debug.Log("GameManager existe? " + (GameManager.Instance != null));
+
+        if (GameManager.Instance != null && counter != null)
+        {
+            GameManager.Instance.SaveMaterials(counter);
+        }
+
+        GameManager.Instance.LoadScene("SanctumTheater");
     }
 }

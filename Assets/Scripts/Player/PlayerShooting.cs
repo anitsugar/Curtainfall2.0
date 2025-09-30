@@ -4,62 +4,91 @@ using UnityEngine;
 
 public class PlayerShooting : MonoBehaviour
 {
-    // Referencia a la cámara principal de la escena
-    private Camera mainCamera;
+     private Camera mainCamera;
 
-    // Prefab del proyectil que se va a disparar
     public GameObject projectilePrefab;
-
-    // Punto desde donde se originará el disparo (ej. la punta del arma)
     public Transform firePoint;
-
-    // Velocidad a la que se moverá el proyectil
     public float projectileSpeed = 20f;
+
+    [Header("Ammo Settings")]
+    public int maxAmmo = 10;
+    public int currentAmmo;
+    public float reloadTime = 1f;
+    private bool isReloading = false;
 
     void Start()
     {
-        // Al iniciar, obtenemos la referencia a la cámara principal
         mainCamera = Camera.main;
+        currentAmmo = maxAmmo;
     }
 
     void Update()
     {
-        // Detecta si se ha presionado el botón izquierdo del mouse
+        // Si ya está recargando, no dejar disparar
+        if (isReloading) return;
+
+        // Disparo normal
         if (Input.GetButtonDown("Fire1"))
         {
             Shoot();
         }
+
+        // Recarga manual con R
+        if (Input.GetKeyDown(KeyCode.R) && currentAmmo < maxAmmo)
+        {
+            StartCoroutine(Reload());
+        }
     }
 
-    void Shoot()
+    private void Shoot()
     {
-        // Creamos un rayo desde la cámara hacia la posición del mouse en la pantalla
+        if (currentAmmo <= 0)
+            return; // no dispara si está vacío (ya debería estar recargando automático)
+
+        // Calcular dirección hacia el mouse
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        Vector3 targetDirection;
 
-        // Lanzamos el rayo y comprobamos si ha chocado con algo
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            // Calculamos la dirección desde el punto de disparo (firePoint) hacia el punto de impacto del rayo
-            Vector3 targetDirection = hit.point - firePoint.position;
-            
-            // Nos aseguramos de que el disparo sea en el plano horizontal (Y=0)
-            // Esto es clave para el estilo top-down 3D
+            targetDirection = hit.point - firePoint.position;
             targetDirection.y = 0;
-
-            // Creamos una instancia del proyectil en la posición y rotación del firePoint
-            GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
-
-            // Obtenemos el componente Rigidbody del proyectil y le aplicamos una fuerza
-            // Usamos .normalized para obtener un vector de magnitud 1 (solo la dirección)
-            // y lo multiplicamos por la velocidad deseada.
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.velocity = targetDirection.normalized * projectileSpeed;
-            }
-
-            
         }
+        else
+        {
+            targetDirection = firePoint.forward;
+        }
+
+        // Instanciar proyectil
+        GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = targetDirection.normalized * projectileSpeed;
+        }
+
+        currentAmmo--;
+        Debug.Log("Balas restantes: " + currentAmmo);
+
+        // 👇 apenas llega a 0, inicia recarga automática
+        if (currentAmmo <= 0)
+        {
+            StartCoroutine(Reload());
+        }
+    }
+
+    private IEnumerator Reload()
+    {
+        if (isReloading) yield break; // evita doble recarga
+
+        isReloading = true;
+        Debug.Log("Recargando...");
+
+        yield return new WaitForSeconds(reloadTime);
+
+        currentAmmo = maxAmmo;
+        isReloading = false;
+
+        Debug.Log("Recarga completa. Munición: " + currentAmmo);
     }
 }

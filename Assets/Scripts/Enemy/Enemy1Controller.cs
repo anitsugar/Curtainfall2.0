@@ -14,6 +14,9 @@ public class Enemy1Controller : MonoBehaviour
 
     [Header("Health Settings")]
     [SerializeField] private float e_health = 15f;
+    
+    [Header("Drop Settings")]
+    [SerializeField] private GameObject dropPrefab;
 
 
     private Rigidbody rb;
@@ -166,6 +169,18 @@ public class Enemy1Controller : MonoBehaviour
     private void Die()
     {
         Debug.Log("Enemy has died.");
+
+        
+        if (dropPrefab != null)
+        {
+            
+            Instantiate(dropPrefab, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("No dropPrefab asignado en el enemigo.");
+        }
+
         Destroy(gameObject);
     } 
 }

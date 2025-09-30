@@ -6,20 +6,26 @@ public class DropCounter : MonoBehaviour
 {
     private PlayerMaterialsCounter playerMaterialsCounter;
     
-    public void OnTriggerEnter()
+    public void OnTriggerEnter(Collider other)
     {
-        if (gameObject.CompareTag("LightEssence"))
+        
+        PlayerMaterialsCounter playerMaterialsCounter = other.GetComponent<PlayerMaterialsCounter>();
+
+        if (playerMaterialsCounter == null) return; 
+
+        
+        if (CompareTag("LightEssence"))
         {
             int amount = Random.Range(5, 10);
             playerMaterialsCounter.IncreaseLightAmount(amount);
-            Debug.Log("LightEssence x" +amount);
+            Debug.Log("Light Essence x" + amount);
             Destroy(gameObject);
         }
-        if (gameObject.CompareTag("DarkEssence"))
+        else if (CompareTag("DarkEssence"))
         {
             int amount = Random.Range(5, 10);
             playerMaterialsCounter.IncreaseDarkAmount(amount);
-            Debug.Log("DarkEssence x" +amount);
+            Debug.Log("Dark Essence x" + amount);
             Destroy(gameObject);
         }
     }
