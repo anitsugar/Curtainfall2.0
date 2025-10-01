@@ -1,32 +1,43 @@
+// File: SpriteSorterY.cs
 using UnityEngine;
 
 /// <summary>
-/// Ajusta dinámicamente el Sorting Order de un SpriteRenderer basado en la posición Y del objeto.
-/// Esto asegura un correcto renderizado 2.5D incluso con una cámara en perspectiva.
-/// Requiere que el pivote del sprite esté en la base ("pies") del personaje/objeto.
+/// Converts world Y (plus an optional feet offset) into a sorting order.
+/// Use only when you actually need manual 2D stacking; prefer depth/Z when ZWrite is ON.
 /// </summary>
-[RequireComponent(typeof(SpriteRenderer))]
+[ExecuteAlways]
+[RequireComponent(typeof(Renderer))]
+[DisallowMultipleComponent]
 public class SpriteSorter : MonoBehaviour
 {
-    // Multiplicador para dar más granularidad al sorting order.
-    // Un valor más alto permite más precisión en el ordenamiento.
-    [SerializeField] private int sortingOrderMultiplier = 100;
+    [Tooltip("Sorting Order = Base - RoundToInt((Y + YOffset) * Multiplier)")]
+    public int SortingOrderBase = 0;
 
-    private SpriteRenderer spriteRenderer;
+    [Tooltip("Higher multiplier = stronger separation between objects.")]
+    public int SortingOrderMultiplier = 100;
 
-    private void Awake()
+    [Tooltip("Use this if your sprite pivot isn't exactly at the feet.")]
+    public float YOffset = 0f;
+
+    Renderer _renderer;
+    Transform _tf;
+
+    void OnEnable()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        _renderer = GetComponent<Renderer>();
+        _tf = transform;
+        UpdateOrder();
     }
 
-    // Usamos LateUpdate para asegurarnos de que el ordenamiento se aplique
-    // DESPUÉS de que todos los cálculos de movimiento en Update() hayan ocurrido.
-    private void LateUpdate()
+    void LateUpdate() => UpdateOrder();
+
+    void UpdateOrder()
     {
-        // La magia está aquí:
-        // 1. Tomamos la posición Y del objeto en el mundo.
-        // 2. La multiplicamos por un número negativo (para que un Y más alto resulte en un orden menor).
-        // 3. Lo convertimos a un entero para asignarlo al sortingOrder.
-        spriteRenderer.sortingOrder = (int)(transform.position.y * -sortingOrderMultiplier);
+        if (_renderer == null) return;
+        float y = _tf.position.y + YOffset;
+        int order = SortingOrderBase - Mathf.RoundToInt(y * SortingOrderMultiplier);
+        // Clamp to Unity's safe range
+        order = Mathf.Clamp(order, short.MinValue, short.MaxValue);
+        _renderer.sortingOrder = order;
     }
 }
