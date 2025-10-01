@@ -95,9 +95,30 @@ public class PlayerController : MonoBehaviour
         p_health -= damageAmount;
         Debug.Log("Player took " + damageAmount + " damage. Current health: " + p_health);
 
+        StartCoroutine(FlashRed()); // 👈 Se llama al feedback visual
+
         if (p_health <= 0)
         {
             Die();
+        }
+    }
+
+    private IEnumerator FlashRed()
+    {
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+
+        Color[] originalColors = new Color[renderers.Length];
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            originalColors[i] = renderers[i].color;
+            renderers[i].color = Color.red;
+        }
+
+        yield return new WaitForSeconds(0.2f);
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            renderers[i].color = originalColors[i];
         }
     }
 

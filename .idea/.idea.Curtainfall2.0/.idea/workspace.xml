@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="90a13889-3b4c-43e0-8a18-a6227f254903" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/M_Violet 1.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/M_Violet 1.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Blocking/Room2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Blocking/Room2.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Bullets/P_Bullet1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Bullets/P_Bullet1.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Player/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Player/PlayerController.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +100,7 @@
       <option name="presentableId" value="Default" />
       <updated>1759263564273</updated>
       <workItem from="1759263579078" duration="4581000" />
-      <workItem from="1759294519897" duration="7004000" />
+      <workItem from="1759294519897" duration="7327000" />
     </task>
     <servers />
   </component>
