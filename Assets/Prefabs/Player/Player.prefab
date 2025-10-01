@@ -266,6 +266,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   p_health: 30
   moveSpeed: 8
+  pauseMenu: {fileID: 8860688005744870653, guid: 87e5588152d70ff43af23e2a4b28fe19,
+    type: 3}
 --- !u!212 &7131583075042712349
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -334,6 +336,9 @@ MonoBehaviour:
     type: 3}
   firePoint: {fileID: 7940775278686855612}
   projectileSpeed: 20
+  maxAmmo: 10
+  currentAmmo: 0
+  reloadTime: 1
 --- !u!114 &2912538315626563656
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 8f;
     
     private PlayerMaterialsCounter materialsCounter;
+    
+    [SerializeField] private GameObject pauseMenu;
 
     private Rigidbody rb;
     private Vector2 moveInput;
@@ -44,6 +46,15 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 moveDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
             rb.velocity = moveDirection * moveSpeed;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && pauseMenu.activeInHierarchy == false)
+        {
+            pauseMenu.SetActive(true);
+        }
+        if (Input.GetKeyDown(KeyCode.Escape) && pauseMenu.activeInHierarchy == true)
+        {
+            pauseMenu.SetActive(false);
         }
     }
 
