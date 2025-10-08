@@ -9,47 +9,16 @@ public class SpriteBillboarding : MonoBehaviour
 {
     private Camera mainCamera;
 
-    /// <summary>
-    /// If true, the sprite will only rotate on the Y-axis.
-    /// This prevents it from tilting up or down with the camera, which is often a desired effect.
-    /// </summary>
-    [Tooltip("Locks rotation to the Y-axis only.")]
-    public bool lockYAxis = true;
-
-    void Start()
+    [SerializeField] bool freezeXZAxis = true;
+    private void Update()
     {
-        // Cache the main camera reference for better performance.
-        // Camera.main can be slow if called repeatedly in Update().
-        mainCamera = Camera.main;
-    }
-
-    // Using LateUpdate ensures that the billboarding calculation happens
-    // after the camera has completed its movement for the frame.
-    // This prevents visual jittering.
-    void LateUpdate()
-    {
-        if (mainCamera == null)
+        if (freezeXZAxis)
         {
-            Debug.LogWarning("Billboard script can't find the main camera. Please ensure you have a camera tagged as 'MainCamera'.");
-            return;
-        }
-
-        if (lockYAxis)
-        {
-            // Y-Axis locked billboarding:
-            // 1. Get the direction from the sprite to the camera.
-            // 2. Set the Y component to be the same as the sprite's Y to prevent tilting.
-            // 3. Create a rotation that looks in that direction.
-            Vector3 targetPosition = mainCamera.transform.position;
-            targetPosition.y = transform.position.y;
-            transform.LookAt(targetPosition);
+            transform.rotation = Quaternion.Euler(0f, Camera.main.transform.rotation.eulerAngles.y, 0f);
         }
         else
         {
-            // Standard Billboarding:
-            // Make the sprite's rotation the same as the camera's.
-            // This ensures it's perfectly parallel to the camera's view plane.
-            transform.rotation = mainCamera.transform.rotation;
+            transform.rotation = Camera.main.transform.rotation;
         }
     }
 }

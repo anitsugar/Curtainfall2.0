@@ -6,7 +6,6 @@ public class Enemy1Controller : MonoBehaviour
 {
     [Header("Target")]
     [SerializeField] private Transform playerTransform;
-
     [SerializeField] private PlayerController player;
 
     [Header("Movement Settings")]
@@ -14,46 +13,56 @@ public class Enemy1Controller : MonoBehaviour
 
     [Header("Health Settings")]
     [SerializeField] private float e_health = 15f;
-    
+
     [Header("Drop Settings")]
     [SerializeField] private GameObject dropPrefab;
 
+    // --- Rendering / Tint (_Tint via MPB) ---
+    private static readonly int ID_Tint = Shader.PropertyToID("_Tint");
+    private Renderer enemyRenderer;
+    private MaterialPropertyBlock mpb;
+    private Color originalTint = Color.white; // default si el material no define otro
 
     private Rigidbody rb;
-    private Renderer enemyRenderer;
 
     private bool canMove = true;
-    private Color originalColor;
     private bool isCollidingWithPlayer = false;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         enemyRenderer = GetComponentInChildren<Renderer>();
-        
+
+        // Cachear Player por tag si no está asignado
+        if (!playerTransform)
+        {
+            GameObject playerObject = GameObject.FindWithTag("Player");
+            if (playerObject != null) playerTransform = playerObject.transform;
+            else Debug.LogError("Player GameObject with 'Player' tag not found in the scene.");
+        }
+
+        // Inicializar MPB y leer tint base (si existe en el material)
         if (enemyRenderer != null)
         {
-            originalColor = enemyRenderer.material.color;
-        }
+            mpb = new MaterialPropertyBlock();
+            enemyRenderer.GetPropertyBlock(mpb);
 
-        GameObject playerObject = GameObject.FindWithTag("Player");
+            // Intentar leer un Tint existente (si no hay, usar blanco)
+            Color maybeTint = mpb.GetColor(ID_Tint);
+            if (maybeTint == default) maybeTint = Color.white;
+            originalTint = maybeTint;
 
-        if (playerObject != null)
-        {
-            playerTransform = playerObject.transform;
-        }
-        else
-        {
-            Debug.LogError("Player GameObject with 'Player' tag not found in the scene.");
+            // Asegurar que arrancamos con el tint base
+            SetTint(originalTint);
         }
     }
 
     void FixedUpdate()
     {
-        if (canMove)
+        if (canMove && playerTransform != null)
         {
             Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
-            directionToPlayer.y = 0;
+            directionToPlayer.y = 0f;
             rb.velocity = directionToPlayer * moveSpeed;
         }
         else
@@ -62,20 +71,18 @@ public class Enemy1Controller : MonoBehaviour
         }
     }
 
-
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
             isCollidingWithPlayer = true;
-            PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
-            player = playerController;
-            StopAllCoroutines(); 
+            player = collision.gameObject.GetComponent<PlayerController>();
+
+            StopAllCoroutines();
             canMove = false;
             StartCoroutine(DamageSequence());
         }
     }
-
 
     void OnCollisionExit(Collision collision)
     {
@@ -89,78 +96,58 @@ public class Enemy1Controller : MonoBehaviour
     {
         if (enemyRenderer != null)
         {
-            
             while (isCollidingWithPlayer)
             {
-                
                 yield return new WaitForSeconds(0.2f);
-                
-                
                 if (!isCollidingWithPlayer) break;
 
-                
-                enemyRenderer.material.color = Color.yellow;
+                // Flash amarillo -> rojo -> original
+                SetTint(Color.yellow);
                 yield return new WaitForSeconds(0.5f);
-                
-                
-                enemyRenderer.material.color = Color.red;
+
+                SetTint(Color.red);
                 EnemyDoDamage();
                 yield return new WaitForSeconds(0.2f);
-                
-                enemyRenderer.material.color = originalColor;
+
+                SetTint(originalTint);
                 yield return new WaitForSeconds(0.5f);
             }
         }
 
-        
-        
-        if (enemyRenderer != null)
-        {
-            enemyRenderer.material.color = originalColor;
-        }
+        // Restaurar color por si salió del bucle sin último reset
+        SetTint(originalTint);
 
-        
         yield return new WaitForSeconds(0.3f);
-
-        
         canMove = true;
     }
 
     public void EnemyTakeDamage(float damageAmount)
     {
         e_health -= damageAmount;
-        
         Debug.Log("Enemy took " + damageAmount + " damage. Current health: " + e_health);
-        
+
         if (e_health <= 0)
         {
             Die();
         }
         else
         {
-            // Detenemos cualquier corutina de feedback de daño anterior
-            // y comenzamos una nueva.
-            StopCoroutine("HandleDamageFeedback");
-            StartCoroutine("HandleDamageFeedback");
+            StopCoroutine(nameof(HandleDamageFeedback));
+            StartCoroutine(nameof(HandleDamageFeedback));
         }
     }
-    
-    // Nueva corutina para manejar el feedback visual del daño
+
+    // Feedback de daño breve (azul)
     private IEnumerator HandleDamageFeedback()
     {
-        // Cambia el color a azul
-        enemyRenderer.material.color = Color.blue;
-        
-        // Espera 0.2 segundos
+        SetTint(Color.blue);
         yield return new WaitForSeconds(0.2f);
-        
-        // Vuelve al color original
-        enemyRenderer.material.color = originalColor;
+        SetTint(originalTint);
     }
 
     public void EnemyDoDamage()
     {
-        if (isCollidingWithPlayer)
+        if (isCollidingWithPlayer && player != null)
         {
             player.TakeDamage(5f);
         }
@@ -170,10 +157,8 @@ public class Enemy1Controller : MonoBehaviour
     {
         Debug.Log("Enemy has died.");
 
-        
         if (dropPrefab != null)
         {
-            
             Instantiate(dropPrefab, transform.position, Quaternion.identity);
         }
         else
@@ -182,5 +167,16 @@ public class Enemy1Controller : MonoBehaviour
         }
 
         Destroy(gameObject);
-    } 
+    }
+
+    // --- Utilidades de Tint (_Tint via MPB) ---
+    private void SetTint(Color c)
+    {
+        if (enemyRenderer == null) return;
+        if (mpb == null) mpb = new MaterialPropertyBlock();
+
+        enemyRenderer.GetPropertyBlock(mpb);
+        mpb.SetColor(ID_Tint, c);
+        enemyRenderer.SetPropertyBlock(mpb);
+    }
 }

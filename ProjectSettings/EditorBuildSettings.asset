@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Blocking/Room2.unity
+    guid: de8b238a5bc5a364d86c5d265d8fbda9
+  - enabled: 1
     path: Assets/Scenes/Levels/SanctumTheater.unity
     guid: f1f62cc8bf83fd04a82f6defde2b5c18
   - enabled: 0
@@ -14,9 +17,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Blocking/Room1.unity
     guid: 3206d27f526e8ef4d9f633fca46609b3
-  - enabled: 1
-    path: Assets/Blocking/Room2.unity
-    guid: de8b238a5bc5a364d86c5d265d8fbda9
   - enabled: 0
     path: Assets/Scenes/Levels/IvanTesting.unity
     guid: caf5d5869a296c9438d289c887f204fe
