@@ -149,7 +149,7 @@ public class Enemy1Controller : MonoBehaviour
     {
         if (isCollidingWithPlayer && player != null)
         {
-            player.TakeDamage(5f);
+            player.TakeDamage(10f);
         }
     }
 
