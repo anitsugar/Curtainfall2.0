@@ -120,10 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 845283bff7f694f4ab3f693f62a54b9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetCamera: {fileID: 0}
-  LockYAxis: 1
-  PivotOffset: {x: 0, y: 0, z: 0}
-  RecacheSeconds: 2
+  freezeXZAxis: 1
 --- !u!114 &2357026063657154920
 MonoBehaviour:
   m_ObjectHideFlags: 0

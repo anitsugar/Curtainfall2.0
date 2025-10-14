@@ -1,94 +1,144 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerShooting : MonoBehaviour
 {
-     private Camera mainCamera;
+    private Camera mainCamera;
 
+    [Header("Bullet Settings")]
     public GameObject projectilePrefab;
     public Transform firePoint;
     public float projectileSpeed = 20f;
 
+    
+
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI bulletCountText;
+    public GameObject lightBullet;
+    public GameObject darkBullet;
+    public GameObject reloadSymbol;
+
     [Header("Ammo Settings")]
     public int maxAmmo = 10;
     public int currentAmmo;
-    public float reloadTime = 1f;
+    public float reloadTime = 3f;
     private bool isReloading = false;
 
-    void Start()
+    private void Start()
     {
         mainCamera = Camera.main;
+
+        lightBullet.SetActive(true);
+        darkBullet.SetActive(false);
+
         currentAmmo = maxAmmo;
+        UpdateAmmoUI("Start()");
     }
 
-    void Update()
+    private void Update()
     {
-        // Si ya está recargando, no dejar disparar
         if (isReloading) return;
 
-        // Disparo normal
         if (Input.GetButtonDown("Fire1"))
         {
             Shoot();
         }
 
-        // Recarga manual con R
         if (Input.GetKeyDown(KeyCode.R) && currentAmmo < maxAmmo)
         {
             StartCoroutine(Reload());
         }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            ChangeBulletAttribute();
+        }
+        UpdateAmmoUI("Update()");
     }
 
     private void Shoot()
     {
         if (currentAmmo <= 0)
-            return; // no dispara si está vacío (ya debería estar recargando automático)
+        {
+            StartCoroutine(Reload());
+            return;
+        }
 
-        // Calcular dirección hacia el mouse
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         Vector3 targetDirection;
 
         if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            targetDirection = hit.point - firePoint.position;
-            targetDirection.y = 0;
-        }
+            targetDirection = (hit.point - firePoint.position).normalized;
         else
-        {
             targetDirection = firePoint.forward;
-        }
 
-        // Instanciar proyectil
-        GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+        GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         if (rb != null)
-        {
-            rb.velocity = targetDirection.normalized * projectileSpeed;
-        }
+            rb.velocity = targetDirection * projectileSpeed;
 
         currentAmmo--;
-        Debug.Log("Balas restantes: " + currentAmmo);
+        
 
-        // 👇 apenas llega a 0, inicia recarga automática
         if (currentAmmo <= 0)
-        {
             StartCoroutine(Reload());
-        }
     }
 
     private IEnumerator Reload()
     {
-        if (isReloading) yield break; // evita doble recarga
+        if (isReloading) yield break;
 
         isReloading = true;
-        Debug.Log("Recargando...");
+        Debug.Log("Reloading...");
 
+        
+        bulletCountText.gameObject.SetActive(false);
+        
+        reloadSymbol.SetActive(true);
+        
         yield return new WaitForSeconds(reloadTime);
-
+        
+        reloadSymbol.SetActive(false);
+        bulletCountText.gameObject.SetActive(true);
+        
         currentAmmo = maxAmmo;
         isReloading = false;
-
-        Debug.Log("Recarga completa. Munición: " + currentAmmo);
+        
+        
     }
+
+    private void UpdateAmmoUI(string caller = "")
+    {
+        
+        if (bulletCountText == null)
+        {
+            var found = FindObjectOfType<TextMeshProUGUI>();
+            if (found != null)
+            {
+                bulletCountText = found;
+            }
+        }
+
+        if (bulletCountText != null)
+        {
+            
+            bulletCountText.text = $"{currentAmmo} / {maxAmmo}";
+        }
+        
+    }
+
+    private void ChangeBulletAttribute()
+    {
+        bool usingLight = lightBullet.activeInHierarchy;
+        lightBullet.SetActive(!usingLight);
+        darkBullet.SetActive(usingLight);
+
+        currentAmmo = 0;
+        StartCoroutine(Reload());
+    }
+
+    
 }
