@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class PlayerShooting : MonoBehaviour
 {
@@ -67,6 +68,7 @@ public class PlayerShooting : MonoBehaviour
             return;
         }
 
+        // Disparo hacia donde apunta el mouse
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         Vector3 targetDirection;
 
@@ -75,13 +77,18 @@ public class PlayerShooting : MonoBehaviour
         else
             targetDirection = firePoint.forward;
 
+        // Crear el proyectil
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         if (rb != null)
             rb.velocity = targetDirection * projectileSpeed;
 
+        // Cámara: retroceso (knockback)
+        var fx = GetComponentInChildren<CameraFXController>();
+        if (fx != null)
+            fx.PlayShootKnockback(targetDirection); // 👉 le pasamos la dirección de disparo real
+
         currentAmmo--;
-        
 
         if (currentAmmo <= 0)
             StartCoroutine(Reload());

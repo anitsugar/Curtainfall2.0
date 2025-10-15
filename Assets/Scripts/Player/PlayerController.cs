@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System;
-
+using Cinemachine;
 
 /// Controla el movimiento, las acciones y el estado del jugador.
 /// Utiliza el nuevo Input System de Unity.
@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private PlayerInputActions playerInputActions;
     private PlayerDodge playerDodge;
+
 
     private void Awake()
     {
@@ -92,9 +93,17 @@ public class PlayerController : MonoBehaviour
         p_health = Mathf.Clamp(p_health, 0, maxHealth);
 
         Debug.Log($"Player took {damageAmount} damage. Current health: {p_health}");
+
+        
         StartCoroutine(FlashRed());
 
-        OnHealthChanged?.Invoke(p_health); // 👈 Notificamos el cambio
+        var fx = GetComponentInChildren<CameraFXController>();
+        if (fx)
+        {
+            fx.PlayDamageShake();
+        }
+        
+        OnHealthChanged?.Invoke(p_health);
 
         if (p_health <= 0)
             Die();
@@ -136,4 +145,6 @@ public class PlayerController : MonoBehaviour
     }
 
     public float GetHealth() => p_health;
+    
+    
 }
