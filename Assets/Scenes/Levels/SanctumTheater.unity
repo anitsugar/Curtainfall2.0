@@ -1897,6 +1897,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1177790486685462076, guid: 1126078e60138fe4c81da9ef2e47db2a,
         type: 3}
+      propertyPath: moveSpeed
+      value: 7.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1177790486685462076, guid: 1126078e60138fe4c81da9ef2e47db2a,
+        type: 3}
       propertyPath: impulseSource
       value: 
       objectReference: {fileID: 691017687}
