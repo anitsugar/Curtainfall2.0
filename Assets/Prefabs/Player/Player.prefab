@@ -866,7 +866,7 @@ GameObject:
   - component: {fileID: 5826957607434522334}
   - component: {fileID: 5437661888241242299}
   m_Layer: 6
-  m_Name: Text (TMP)
+  m_Name: BulletText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
