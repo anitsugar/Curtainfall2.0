@@ -6547,6 +6547,11 @@ PrefabInstance:
       propertyPath: startDelay.scalar
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1995854566782641632, guid: 88a1130194ffef94f9ce66b5d6c890be,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.a
+      value: 0.7294118
+      objectReference: {fileID: 0}
     - target: {fileID: 2678116128316900308, guid: 88a1130194ffef94f9ce66b5d6c890be,
         type: 3}
       propertyPath: m_SortMode
