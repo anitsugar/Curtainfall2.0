@@ -127,13 +127,13 @@ public class GameManager : MonoBehaviour
     public DropZoneUI.RoomElement GetZone3Element() => zone3.roomElement;
 
     // -------------------------------
-    // Compatibilidad con antiguos métodos SaveZones()
+    // Compatibilidad con métodos antiguos
     // -------------------------------
     public void SaveZones(DropZoneUI.RoomElement z2, DropZoneUI.RoomElement z3)
     {
         zone2.roomElement = z2;
         zone3.roomElement = z3;
-        Debug.Log($"SaveZones: Zona2={zone2.roomElement}, Zona3={zone3.roomElement}");
+        Debug.Log($"SaveZones (Compatibilidad): Zona2={zone2.roomElement}, Zona3={zone3.roomElement}");
     }
 
     // -------------------------------

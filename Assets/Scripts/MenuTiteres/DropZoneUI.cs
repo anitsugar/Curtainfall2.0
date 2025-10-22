@@ -14,8 +14,8 @@ public class DropZoneUI : MonoBehaviour, IDropHandler, IPointerDownHandler, IPoi
     }
 
     [Header("Configuración de zona")]
-    [Tooltip("Número de zona (2 o 3) para identificar cada zona en GameManager.")]
-    public int zoneIndex; // 2 o 3 según tu GameManager
+    [Tooltip("Número de zona (1, 2 o 3) para identificar cada zona en GameManager.")]
+    public int zoneIndex; // 1, 2 o 3 según tu GameManager
 
     [Header("Estado actual")]
     public RoomElement roomElement = RoomElement.None;
@@ -123,7 +123,9 @@ public class DropZoneUI : MonoBehaviour, IDropHandler, IPointerDownHandler, IPoi
     {
         if (GameManager.Instance == null) return;
 
-        if (zoneIndex == 2)
+        if (zoneIndex == 1)
+            GameManager.Instance.SaveZone1(roomElement, LightPercentage, DarkPercentage);
+        else if (zoneIndex == 2)
             GameManager.Instance.SaveZone2(roomElement, LightPercentage, DarkPercentage);
         else if (zoneIndex == 3)
             GameManager.Instance.SaveZone3(roomElement, LightPercentage, DarkPercentage);
