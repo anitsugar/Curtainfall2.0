@@ -174,7 +174,7 @@ MonoBehaviour:
     type: 3}
   damageVFXPrefab: {fileID: 4692049296809887021, guid: ff1522c257cd57b4b83be72062186169,
     type: 3}
-  vfxLifetime: 1.5
+  vfxDuration: 1
 --- !u!54 &1956739169667473483
 Rigidbody:
   m_ObjectHideFlags: 0

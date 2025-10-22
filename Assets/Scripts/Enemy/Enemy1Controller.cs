@@ -5,7 +5,7 @@ using UnityEngine.VFX;
 
 public class Enemy1Controller : MonoBehaviour
 {
-    [Header("Target")]
+   [Header("Target")]
     [SerializeField] private Transform playerTransform;
     [SerializeField] private PlayerController player;
 
@@ -18,9 +18,9 @@ public class Enemy1Controller : MonoBehaviour
     [Header("Drop Settings")]
     [SerializeField] private GameObject dropPrefab;
 
-    [Header("VFX Settings")]
-    [SerializeField] private GameObject damageVFXPrefab; // ← Prefab del VFX que quieres instanciar
-    [SerializeField] private float vfxLifetime = 2f; // ← Cuánto dura antes de destruirse
+    [Header("Damage VFX")]
+    [SerializeField] private GameObject damageVFXPrefab; // Prefab común
+    [SerializeField] private float vfxDuration = 1f;
 
     // --- Rendering / Tint (_Tint via MPB) ---
     private static readonly int ID_Tint = Shader.PropertyToID("_Tint");
@@ -29,6 +29,7 @@ public class Enemy1Controller : MonoBehaviour
     private Color originalTint = Color.white;
 
     private Rigidbody rb;
+
     private bool canMove = true;
     private bool isCollidingWithPlayer = false;
 
@@ -37,6 +38,7 @@ public class Enemy1Controller : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         enemyRenderer = GetComponentInChildren<Renderer>();
 
+        // Buscar Player automáticamente si no se asignó
         if (!playerTransform)
         {
             GameObject playerObject = GameObject.FindWithTag("Player");
@@ -44,15 +46,14 @@ public class Enemy1Controller : MonoBehaviour
             else Debug.LogError("Player GameObject with 'Player' tag not found in the scene.");
         }
 
+        // Inicializar MPB y color
         if (enemyRenderer != null)
         {
             mpb = new MaterialPropertyBlock();
             enemyRenderer.GetPropertyBlock(mpb);
-
             Color maybeTint = mpb.GetColor(ID_Tint);
             if (maybeTint == default) maybeTint = Color.white;
             originalTint = maybeTint;
-
             SetTint(originalTint);
         }
     }
@@ -118,36 +119,33 @@ public class Enemy1Controller : MonoBehaviour
         canMove = true;
     }
 
-    public void EnemyTakeDamage(float damageAmount)
+    // 🔥 Ahora instanciamos un prefab común con VisualEffect adentro
+    public void EnemyTakeDamage(float damageAmount, Vector3 hitDirection)
     {
         e_health -= damageAmount;
-        Debug.Log("Enemy took " + damageAmount + " damage. Current health: " + e_health);
+        Debug.Log($"Enemy took {damageAmount} damage. Current health: {e_health}");
 
-        // === NUEVO BLOQUE: reproducir VFX ===
+        // Efecto visual de impacto
         if (damageVFXPrefab != null)
         {
-            GameObject vfxInstance = Instantiate(damageVFXPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
+            GameObject vfxObject = Instantiate(damageVFXPrefab, transform.position + Vector3.up * 1f, Quaternion.identity);
 
-            // Si tiene VisualEffect, darle Play()
-            var vfx = vfxInstance.GetComponent<VisualEffect>();
+            // Rotar hacia el disparo
+            if (hitDirection != Vector3.zero)
+                vfxObject.transform.rotation = Quaternion.LookRotation(hitDirection);
+
+            // Si el prefab tiene un componente VisualEffect, lo reproducimos
+            VisualEffect vfx = vfxObject.GetComponent<VisualEffect>();
             if (vfx != null)
-            {
                 vfx.Play();
-                Debug.Log($"▶️ VisualEffect reproducido en {gameObject.name}");
-            }
-            else
-            {
-                Debug.LogWarning("⚠ El prefab no tiene componente VisualEffect.");
-            }
 
-            Destroy(vfxInstance, 3f); // opcional: destruir después
+            Destroy(vfxObject, vfxDuration);
         }
         else
         {
-            Debug.LogWarning("⚠ No hay prefab de daño asignado en el enemigo.");
+            Debug.LogWarning("No damageVFXPrefab asignado en el enemigo.");
         }
 
-        // === Daño / feedback visual ===
         if (e_health <= 0)
         {
             Die();
@@ -179,9 +177,9 @@ public class Enemy1Controller : MonoBehaviour
         Debug.Log("Enemy has died.");
 
         if (dropPrefab != null)
-        {
             Instantiate(dropPrefab, transform.position, Quaternion.identity);
-        }
+        else
+            Debug.LogWarning("No dropPrefab asignado en el enemigo.");
 
         Destroy(gameObject);
     }
