@@ -366,7 +366,7 @@
     "m_ActiveSubTarget": {
         "m_Id": "0acf01ba0c0043bc989a42d5cec13545"
     },
-    "m_AllowMaterialOverride": false,
+    "m_AllowMaterialOverride": true,
     "m_SurfaceType": 0,
     "m_ZTestMode": 4,
     "m_ZWriteControl": 0,
@@ -819,10 +819,10 @@
     "m_Guid": {
         "m_GuidSerialized": "078fee9b-5b7d-4a93-af5c-fb41eaafe201"
     },
-    "m_Name": "AlphaClip",
+    "m_Name": "AlphaClipLimits",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "AlphaClip",
-    "m_DefaultReferenceName": "_AlphaClip",
+    "m_RefNameGeneratedByDisplayName": "AlphaClipLimits",
+    "m_DefaultReferenceName": "_AlphaClipLimits",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
@@ -845,7 +845,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "b4c45426063549fda6f4eafc732e58df",
     "m_Id": 0,
-    "m_DisplayName": "AlphaClip",
+    "m_DisplayName": "AlphaClipLimits",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
