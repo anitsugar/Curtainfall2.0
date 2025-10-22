@@ -8,7 +8,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+   public static GameManager Instance { get; private set; }
+   public delegate void ZoneChangedHandler(int newZoneIndex);
+   public event ZoneChangedHandler OnZoneChanged;
 
     // --- Spawn points ---
     private string nextSpawnPointId;
@@ -18,29 +20,24 @@ public class GameManager : MonoBehaviour
     public int darkEssence { get; private set; }
 
     // --- Datos de las zonas ---
-    [System.Serializable]
-    public class ZoneData
-    {
-        public DropZoneUI.RoomElement roomElement = DropZoneUI.RoomElement.None;
-        public float LightPercentage = 50f;
-        public float DarkPercentage = 50f;
+    private DropZoneUI.RoomElement zone1Element = DropZoneUI.RoomElement.None;
+    private DropZoneUI.RoomElement zone2Element = DropZoneUI.RoomElement.None;
+    private DropZoneUI.RoomElement zone3Element = DropZoneUI.RoomElement.None;
 
-        public ZoneData() { }
+    private float zone1LightPercentage = 50f;
+    private float zone1DarkPercentage = 50f;
 
-        public ZoneData(DropZoneUI.RoomElement element, float light, float dark)
-        {
-            roomElement = element;
-            LightPercentage = light;
-            DarkPercentage = dark;
-        }
-    }
+    private float zone2LightPercentage = 50f;
+    private float zone2DarkPercentage = 50f;
 
-    private ZoneData zone1 = new ZoneData();
-    private ZoneData zone2 = new ZoneData();
-    private ZoneData zone3 = new ZoneData();
+    private float zone3LightPercentage = 50f;
+    private float zone3DarkPercentage = 50f;
 
     private int zoneNumber = 1; // Empieza en 1, incrementa al pasar por portal
 
+    // ------------------------------------------------------
+    // --- Inicialización del Singleton ---
+    // ------------------------------------------------------
     private void Awake()
     {
         if (Instance == null)
@@ -55,10 +52,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // -------------------------------
-    // Lógica de spawn
-    // -------------------------------
-    public void SetNextSpawnPoint(string spawnId) => nextSpawnPointId = spawnId;
+    // ------------------------------------------------------
+    // --- Lógica de spawn ---
+    // ------------------------------------------------------
+    public void SetNextSpawnPoint(string spawnId)
+    {
+        nextSpawnPointId = spawnId;
+    }
 
     public string GetAndClearNextSpawnPoint()
     {
@@ -73,9 +73,9 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Cargando escena: {sceneName}");
     }
 
-    // -------------------------------
-    // Lógica de recursos del jugador
-    // -------------------------------
+    // ------------------------------------------------------
+    // --- Lógica de recursos del jugador ---
+    // ------------------------------------------------------
     public void SaveMaterials(PlayerMaterialsCounter counter)
     {
         lightEssence = counter.lightEssence;
@@ -88,58 +88,63 @@ public class GameManager : MonoBehaviour
         counter.darkEssence = darkEssence;
     }
 
-    // -------------------------------
-    // Guardar zonas
-    // -------------------------------
+    // ------------------------------------------------------
+    // --- Lógica de zonas ---
+    // ------------------------------------------------------
+
+    // Zona 1
     public void SaveZone1(DropZoneUI.RoomElement element, float light, float dark)
     {
-        zone1.roomElement = element;
-        zone1.LightPercentage = light;
-        zone1.DarkPercentage = dark;
-        Debug.Log($"Zona 1 guardada -> Element={element}, Light={light}, Dark={dark}");
+        zone1Element = element;
+        zone1LightPercentage = light;
+        zone1DarkPercentage = dark;
+        Debug.Log($"💾 Zona 1 guardada: Element={element}, Light={light}, Dark={dark}");
     }
 
+    // Zona 2
     public void SaveZone2(DropZoneUI.RoomElement element, float light, float dark)
     {
-        zone2.roomElement = element;
-        zone2.LightPercentage = light;
-        zone2.DarkPercentage = dark;
-        Debug.Log($"Zona 2 guardada -> Element={element}, Light={light}, Dark={dark}");
+        zone2Element = element;
+        zone2LightPercentage = light;
+        zone2DarkPercentage = dark;
+        Debug.Log($"💾 Zona 2 guardada: Element={element}, Light={light}, Dark={dark}");
     }
 
+    // Zona 3
     public void SaveZone3(DropZoneUI.RoomElement element, float light, float dark)
     {
-        zone3.roomElement = element;
-        zone3.LightPercentage = light;
-        zone3.DarkPercentage = dark;
-        Debug.Log($"Zona 3 guardada -> Element={element}, Light={light}, Dark={dark}");
+        zone3Element = element;
+        zone3LightPercentage = light;
+        zone3DarkPercentage = dark;
+        Debug.Log($"💾 Zona 3 guardada: Element={element}, Light={light}, Dark={dark}");
     }
 
-    // -------------------------------
-    // Getters de zonas
-    // -------------------------------
-    public ZoneData GetZone1Data() => zone1;
-    public ZoneData GetZone2Data() => zone2;
-    public ZoneData GetZone3Data() => zone3;
+    // ------------------------------------------------------
+    // --- Getters de RoomElement ---
+    // ------------------------------------------------------
+    public DropZoneUI.RoomElement GetZone1Element() => zone1Element;
+    public DropZoneUI.RoomElement GetZone2Element() => zone2Element;
+    public DropZoneUI.RoomElement GetZone3Element() => zone3Element;
 
-    public DropZoneUI.RoomElement GetZone1Element() => zone1.roomElement;
-    public DropZoneUI.RoomElement GetZone2Element() => zone2.roomElement;
-    public DropZoneUI.RoomElement GetZone3Element() => zone3.roomElement;
+    // ------------------------------------------------------
+    // --- Getters de Porcentajes ---
+    // ------------------------------------------------------
+    public float GetZone1Light() => zone1LightPercentage;
+    public float GetZone1Dark() => zone1DarkPercentage;
 
-    // -------------------------------
-    // Compatibilidad con métodos antiguos
-    // -------------------------------
-    public void SaveZones(DropZoneUI.RoomElement z2, DropZoneUI.RoomElement z3)
+    public float GetZone2Light() => zone2LightPercentage;
+    public float GetZone2Dark() => zone2DarkPercentage;
+
+    public float GetZone3Light() => zone3LightPercentage;
+    public float GetZone3Dark() => zone3DarkPercentage;
+
+    // ------------------------------------------------------
+    // --- Número de zona actual ---
+    // ------------------------------------------------------
+    public int GetCurrentZoneNumber()
     {
-        zone2.roomElement = z2;
-        zone3.roomElement = z3;
-        Debug.Log($"SaveZones (Compatibilidad): Zona2={zone2.roomElement}, Zona3={zone3.roomElement}");
+        return zoneNumber;
     }
-
-    // -------------------------------
-    // Número de zona
-    // -------------------------------
-    public int GetCurrentZoneNumber() => zoneNumber;
 
     public void IncrementZoneNumber()
     {
@@ -151,5 +156,15 @@ public class GameManager : MonoBehaviour
     {
         zoneNumber = number;
         Debug.Log($"SetCurrentZoneNumber: {zoneNumber}");
+    }
+
+    // ------------------------------------------------------
+    // --- Compatibilidad (por si aún lo usa algún script viejo) ---
+    // ------------------------------------------------------
+    public void SaveZones(DropZoneUI.RoomElement zone2, DropZoneUI.RoomElement zone3)
+    {
+        zone2Element = zone2;
+        zone3Element = zone3;
+        Debug.Log($"SaveZones (compatibilidad): Zona2={zone2Element}, Zona3={zone3Element}");
     }
 }

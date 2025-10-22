@@ -6,8 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="90a13889-3b4c-43e0-8a18-a6227f254903" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Curtainfall2.0/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Curtainfall2.0/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Blocking/DarkRoom1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Blocking/DarkRoom1.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Levels/SanctumTheater.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Levels/SanctumTheater.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Core/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Core/GameManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/MenuTiteres/DropZoneUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/MenuTiteres/DropZoneUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ToogleObjectOnTrigger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ToogleObjectOnTrigger.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +109,8 @@
       <workItem from="1760055323561" duration="2568000" />
       <workItem from="1760473384895" duration="6478000" />
       <workItem from="1760506670328" duration="16579000" />
-      <workItem from="1761072961026" duration="12806000" />
+      <workItem from="1761072961026" duration="13866000" />
+      <workItem from="1761100333034" duration="2527000" />
     </task>
     <servers />
   </component>

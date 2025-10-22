@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class DropZoneUI : MonoBehaviour, IDropHandler, IPointerDownHandler, IPointerUpHandler
 {
@@ -25,6 +26,10 @@ public class DropZoneUI : MonoBehaviour, IDropHandler, IPointerDownHandler, IPoi
     [Range(0, 100)] public float LightPercentage = 50f;
     [Range(0, 100)] public float DarkPercentage = 50f;
 
+    [Header("UI de porcentajes")] // 🟦 NUEVO
+    [Tooltip("Texto que muestra los valores de Dark / Light")]
+    public TextMeshProUGUI percentageText; // 🟦 NUEVO
+
     private bool isHeld = false;
     private Coroutine holdCoroutine;
 
@@ -43,10 +48,8 @@ public class DropZoneUI : MonoBehaviour, IDropHandler, IPointerDownHandler, IPoi
             return;
         }
 
-        // Lo hace hijo de la zona
         dropped.transform.SetParent(transform);
 
-        // Centrar en la zona
         RectTransform droppedRect = dropped.GetComponent<RectTransform>();
         if (droppedRect != null)
             droppedRect.anchoredPosition = Vector2.zero;
@@ -73,6 +76,7 @@ public class DropZoneUI : MonoBehaviour, IDropHandler, IPointerDownHandler, IPoi
         DarkPercentage = 50f;
 
         SaveToGameManager();
+        UpdatePercentageText(); // 🟦 NUEVO
         Debug.Log($"🔄 Zona {zoneIndex} reseteada (sin puppet).");
     }
 
@@ -84,6 +88,7 @@ public class DropZoneUI : MonoBehaviour, IDropHandler, IPointerDownHandler, IPoi
         LightPercentage = Mathf.Clamp(value, 0, 100);
         DarkPercentage = 100 - LightPercentage;
         UpdateRoomElement();
+        UpdatePercentageText(); // 🟦 NUEVO
     }
 
     public void SetDarkPercentage(float value)
@@ -91,6 +96,7 @@ public class DropZoneUI : MonoBehaviour, IDropHandler, IPointerDownHandler, IPoi
         DarkPercentage = Mathf.Clamp(value, 0, 100);
         LightPercentage = 100 - DarkPercentage;
         UpdateRoomElement();
+        UpdatePercentageText(); // 🟦 NUEVO
     }
 
     private void UpdateRoomElement()
@@ -113,7 +119,17 @@ public class DropZoneUI : MonoBehaviour, IDropHandler, IPointerDownHandler, IPoi
         }
 
         SaveToGameManager();
+        UpdatePercentageText(); // 🟦 NUEVO
         Debug.Log($"🌗 Zona {zoneIndex}: Light={LightPercentage:F1} / Dark={DarkPercentage:F1} => {roomElement}");
+    }
+
+    // ------------------------------------------------------
+    // --- MOSTRAR TEXTO DE PORCENTAJES ---
+    // ------------------------------------------------------
+    private void UpdatePercentageText() // 🟦 NUEVO
+    {
+        if (percentageText != null)
+            percentageText.text = $"{DarkPercentage:F0} / {LightPercentage:F0}";
     }
 
     // ------------------------------------------------------
