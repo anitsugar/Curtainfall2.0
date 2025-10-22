@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class Enemy1Controller : MonoBehaviour
 {
@@ -17,14 +18,17 @@ public class Enemy1Controller : MonoBehaviour
     [Header("Drop Settings")]
     [SerializeField] private GameObject dropPrefab;
 
+    [Header("VFX Settings")]
+    [SerializeField] private GameObject damageVFXPrefab; // ← Prefab del VFX que quieres instanciar
+    [SerializeField] private float vfxLifetime = 2f; // ← Cuánto dura antes de destruirse
+
     // --- Rendering / Tint (_Tint via MPB) ---
     private static readonly int ID_Tint = Shader.PropertyToID("_Tint");
     private Renderer enemyRenderer;
     private MaterialPropertyBlock mpb;
-    private Color originalTint = Color.white; // default si el material no define otro
+    private Color originalTint = Color.white;
 
     private Rigidbody rb;
-
     private bool canMove = true;
     private bool isCollidingWithPlayer = false;
 
@@ -33,7 +37,6 @@ public class Enemy1Controller : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         enemyRenderer = GetComponentInChildren<Renderer>();
 
-        // Cachear Player por tag si no está asignado
         if (!playerTransform)
         {
             GameObject playerObject = GameObject.FindWithTag("Player");
@@ -41,18 +44,15 @@ public class Enemy1Controller : MonoBehaviour
             else Debug.LogError("Player GameObject with 'Player' tag not found in the scene.");
         }
 
-        // Inicializar MPB y leer tint base (si existe en el material)
         if (enemyRenderer != null)
         {
             mpb = new MaterialPropertyBlock();
             enemyRenderer.GetPropertyBlock(mpb);
 
-            // Intentar leer un Tint existente (si no hay, usar blanco)
             Color maybeTint = mpb.GetColor(ID_Tint);
             if (maybeTint == default) maybeTint = Color.white;
             originalTint = maybeTint;
 
-            // Asegurar que arrancamos con el tint base
             SetTint(originalTint);
         }
     }
@@ -101,7 +101,6 @@ public class Enemy1Controller : MonoBehaviour
                 yield return new WaitForSeconds(0.2f);
                 if (!isCollidingWithPlayer) break;
 
-                // Flash amarillo -> rojo -> original
                 SetTint(Color.yellow);
                 yield return new WaitForSeconds(0.5f);
 
@@ -114,9 +113,7 @@ public class Enemy1Controller : MonoBehaviour
             }
         }
 
-        // Restaurar color por si salió del bucle sin último reset
         SetTint(originalTint);
-
         yield return new WaitForSeconds(0.3f);
         canMove = true;
     }
@@ -126,6 +123,31 @@ public class Enemy1Controller : MonoBehaviour
         e_health -= damageAmount;
         Debug.Log("Enemy took " + damageAmount + " damage. Current health: " + e_health);
 
+        // === NUEVO BLOQUE: reproducir VFX ===
+        if (damageVFXPrefab != null)
+        {
+            GameObject vfxInstance = Instantiate(damageVFXPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
+
+            // Si tiene VisualEffect, darle Play()
+            var vfx = vfxInstance.GetComponent<VisualEffect>();
+            if (vfx != null)
+            {
+                vfx.Play();
+                Debug.Log($"▶️ VisualEffect reproducido en {gameObject.name}");
+            }
+            else
+            {
+                Debug.LogWarning("⚠ El prefab no tiene componente VisualEffect.");
+            }
+
+            Destroy(vfxInstance, 3f); // opcional: destruir después
+        }
+        else
+        {
+            Debug.LogWarning("⚠ No hay prefab de daño asignado en el enemigo.");
+        }
+
+        // === Daño / feedback visual ===
         if (e_health <= 0)
         {
             Die();
@@ -137,7 +159,6 @@ public class Enemy1Controller : MonoBehaviour
         }
     }
 
-    // Feedback de daño breve (azul)
     private IEnumerator HandleDamageFeedback()
     {
         SetTint(Color.blue);
@@ -161,15 +182,10 @@ public class Enemy1Controller : MonoBehaviour
         {
             Instantiate(dropPrefab, transform.position, Quaternion.identity);
         }
-        else
-        {
-            Debug.LogWarning("No dropPrefab asignado en el enemigo.");
-        }
 
         Destroy(gameObject);
     }
 
-    // --- Utilidades de Tint (_Tint via MPB) ---
     private void SetTint(Color c)
     {
         if (enemyRenderer == null) return;
@@ -180,3 +196,4 @@ public class Enemy1Controller : MonoBehaviour
         enemyRenderer.SetPropertyBlock(mpb);
     }
 }
+
