@@ -9,6 +9,7 @@ TagManager:
   - DarkEssence
   - LightTheaterObject
   - DarkTheaterObject
+  - TeatherPuppet
   layers:
   - Default
   - TransparentFX

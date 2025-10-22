@@ -5,6 +5,7 @@ using UnityEngine;
 public class ToogleObjectOnTrigger : MonoBehaviour
 {
     [SerializeField] private GameObject targetObject; // El objeto a encender/apagar
+    [SerializeField] private GameObject targetObject2;
     private bool playerInside = false;
 
     void Update()
@@ -13,6 +14,7 @@ public class ToogleObjectOnTrigger : MonoBehaviour
         {
             // Cambia el estado del objeto
             targetObject.SetActive(!targetObject.activeSelf);
+            targetObject2.SetActive(!targetObject2.activeSelf);
         }
     }
 
