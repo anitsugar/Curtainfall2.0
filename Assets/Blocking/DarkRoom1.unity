@@ -192,6 +192,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy2 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5793674526252916715, guid: 889db480d9987db4a904545bc225584a,
+        type: 3}
+      propertyPath: vfxLifetime
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7653856812192658165, guid: 889db480d9987db4a904545bc225584a,
         type: 3}
       propertyPath: m_SortingOrder
@@ -2073,14 +2078,14 @@ RectTransform:
   m_GameObject: {fileID: 916790611}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4.6505, y: 4.6505, z: 4.6505}
+  m_LocalScale: {x: 2.2662816, y: 2.2662816, z: 2.2662816}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1469622964}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 651, y: 380}
+  m_AnchoredPosition: {x: 722, y: 452}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &945491409
@@ -3911,6 +3916,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0.002989378
+      objectReference: {fileID: 0}
+    - target: {fileID: 7048990941509658645, guid: 1126078e60138fe4c81da9ef2e47db2a,
+        type: 3}
+      propertyPath: dmgAmplitude
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7048990941509658645, guid: 1126078e60138fe4c81da9ef2e47db2a,
+        type: 3}
+      propertyPath: recoilStrength
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1907536961401246299, guid: 1126078e60138fe4c81da9ef2e47db2a, type: 3}

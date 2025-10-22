@@ -7,7 +7,6 @@
     <list default="true" id="90a13889-3b4c-43e0-8a18-a6227f254903" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Curtainfall2.0/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Curtainfall2.0/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Enemy/Enemy1Controller.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Enemy/Enemy1Controller.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Player/Projectile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Player/Projectile.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +106,7 @@
       <workItem from="1760473384895" duration="6478000" />
       <workItem from="1760506670328" duration="16579000" />
       <workItem from="1761072961026" duration="13866000" />
-      <workItem from="1761100333034" duration="8681000" />
+      <workItem from="1761100333034" duration="10260000" />
     </task>
     <servers />
   </component>

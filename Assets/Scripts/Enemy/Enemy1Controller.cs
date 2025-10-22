@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,11 +31,12 @@ public class Enemy1Controller : MonoBehaviour
 
     private Rigidbody rb;
 
-    private bool canMove = true;
+    public bool canMove = false;
     private bool isCollidingWithPlayer = false;
 
     void Awake()
     {
+        
         rb = GetComponent<Rigidbody>();
         enemyRenderer = GetComponentInChildren<Renderer>();
 
@@ -58,8 +60,15 @@ public class Enemy1Controller : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        StartCoroutine(SpawnWait());
+    }
+
     void FixedUpdate()
     {
+        
+        
         if (canMove && playerTransform != null)
         {
             Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
@@ -192,6 +201,12 @@ public class Enemy1Controller : MonoBehaviour
         enemyRenderer.GetPropertyBlock(mpb);
         mpb.SetColor(ID_Tint, c);
         enemyRenderer.SetPropertyBlock(mpb);
+    }
+
+    private IEnumerator SpawnWait()
+    {
+        yield return new WaitForSeconds(1.2f);
+        canMove = true;
     }
 }
 
