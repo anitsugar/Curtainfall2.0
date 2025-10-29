@@ -14,7 +14,7 @@ public class DraggableUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
-        canvas = GetComponentInParent<Canvas>(); // Necesitamos la referencia del Canvas
+        canvas = GetComponentInParent<Canvas>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -22,7 +22,7 @@ public class DraggableUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         originalParent = transform.parent; // Guardamos el parent original
         canvasGroup.alpha = 0.6f; // Se vuelve semi-transparente
         canvasGroup.blocksRaycasts = false; // Para que los DropZones detecten el objeto
-        transform.SetParent(canvas.transform); // Lo llevamos al frente mientras se arrastra
+        transform.SetParent(canvas.transform, true); // Lo llevamos al frente mientras se arrastra
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -35,10 +35,21 @@ public class DraggableUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         canvasGroup.alpha = 1f; 
         canvasGroup.blocksRaycasts = true;
 
-        // Si no se suelta en un DropZone válido, vuelve al parent original
-        if (transform.parent == canvas.transform)
+        DropZoneUI dropZone = transform.parent.GetComponent<DropZoneUI>();
+
+        if (dropZone == null)
         {
-            transform.SetParent(originalParent);
+            // Volver al parent original
+            transform.SetParent(originalParent, false);
+            rectTransform.anchoredPosition = Vector2.zero;
+            rectTransform.localScale = Vector3.one;
+        }
+        else
+        {
+            // Se soltó en zona válida
+            dropZone.currentObject = this.gameObject;
+            rectTransform.anchoredPosition = Vector2.zero;
+            rectTransform.localScale = Vector3.one;
         }
     }
 }

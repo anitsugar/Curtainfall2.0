@@ -11,6 +11,7 @@ TagManager:
   - DarkTheaterObject
   - TeatherPuppet
   - CameraBounds
+  - PuppetScript
   layers:
   - Default
   - TransparentFX

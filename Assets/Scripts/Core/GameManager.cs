@@ -20,9 +20,9 @@ public class GameManager : MonoBehaviour
     public int darkEssence { get; private set; }
 
     // --- Datos de las zonas ---
-    private DropZoneUI.RoomElement zone1Element = DropZoneUI.RoomElement.None;
-    private DropZoneUI.RoomElement zone2Element = DropZoneUI.RoomElement.None;
-    private DropZoneUI.RoomElement zone3Element = DropZoneUI.RoomElement.None;
+    private DropZoneUI.DungeonElement zone1Element = DropZoneUI.DungeonElement.None;
+    private DropZoneUI.DungeonElement zone2Element = DropZoneUI.DungeonElement.None;
+    private DropZoneUI.DungeonElement zone3Element = DropZoneUI.DungeonElement.None;
 
     private float zone1LightPercentage = 50f;
     private float zone1DarkPercentage = 50f;
@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour
     // ------------------------------------------------------
 
     // Zona 1
-    public void SaveZone1(DropZoneUI.RoomElement element, float light, float dark)
+    public void SaveZone1(DropZoneUI.DungeonElement element, float light, float dark)
     {
         zone1Element = element;
         zone1LightPercentage = light;
@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Zona 2
-    public void SaveZone2(DropZoneUI.RoomElement element, float light, float dark)
+    public void SaveZone2(DropZoneUI.DungeonElement element, float light, float dark)
     {
         zone2Element = element;
         zone2LightPercentage = light;
@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Zona 3
-    public void SaveZone3(DropZoneUI.RoomElement element, float light, float dark)
+    public void SaveZone3(DropZoneUI.DungeonElement element, float light, float dark)
     {
         zone3Element = element;
         zone3LightPercentage = light;
@@ -122,9 +122,9 @@ public class GameManager : MonoBehaviour
     // ------------------------------------------------------
     // --- Getters de RoomElement ---
     // ------------------------------------------------------
-    public DropZoneUI.RoomElement GetZone1Element() => zone1Element;
-    public DropZoneUI.RoomElement GetZone2Element() => zone2Element;
-    public DropZoneUI.RoomElement GetZone3Element() => zone3Element;
+    public DropZoneUI.DungeonElement GetZone1Element() => zone1Element;
+    public DropZoneUI.DungeonElement GetZone2Element() => zone2Element;
+    public DropZoneUI.DungeonElement GetZone3Element() => zone3Element;
 
     // ------------------------------------------------------
     // --- Getters de Porcentajes ---
@@ -161,7 +161,7 @@ public class GameManager : MonoBehaviour
     // ------------------------------------------------------
     // --- Compatibilidad (por si aún lo usa algún script viejo) ---
     // ------------------------------------------------------
-    public void SaveZones(DropZoneUI.RoomElement zone2, DropZoneUI.RoomElement zone3)
+    public void SaveZones(DropZoneUI.DungeonElement zone2, DropZoneUI.DungeonElement zone3)
     {
         zone2Element = zone2;
         zone3Element = zone3;

@@ -36,9 +36,9 @@ public class Portal : MonoBehaviour
         }
 
         // Verificar si todas las zonas 1,2,3 tienen elemento asignado (no None)
-        if (zone1.roomElement == DropZoneUI.RoomElement.None ||
-            zone2.roomElement == DropZoneUI.RoomElement.None ||
-            zone3.roomElement == DropZoneUI.RoomElement.None)
+        if (zone1.dungeonElement == DropZoneUI.DungeonElement.None ||
+            zone2.dungeonElement == DropZoneUI.DungeonElement.None ||
+            zone3.dungeonElement == DropZoneUI.DungeonElement.None)
         {
             Debug.Log("❌ No todas las zonas están completas. El portal no se activará.");
             return;
@@ -46,12 +46,12 @@ public class Portal : MonoBehaviour
 
         // Determinar escena según Zona 1
         string sceneToLoadName = null;
-        switch (zone1.roomElement)
+        switch (zone1.dungeonElement)
         {
-            case DropZoneUI.RoomElement.Light:
+            case DropZoneUI.DungeonElement.Light:
                 sceneToLoadName = lightSceneName;
                 break;
-            case DropZoneUI.RoomElement.Dark:
+            case DropZoneUI.DungeonElement.Dark:
                 sceneToLoadName = darkSceneName;
                 break;
         }
@@ -65,7 +65,7 @@ public class Portal : MonoBehaviour
         // Guardar Zonas 2 y 3 para la próxima sala
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.SaveZones(zone2.roomElement, zone3.roomElement);
+            GameManager.Instance.SaveZones(zone2.dungeonElement, zone3.dungeonElement);
             GameManager.Instance.SetCurrentZoneNumber(zoneNumber);
             GameManager.Instance.SetNextSpawnPoint(destinationSpawnPointId);
             GameManager.Instance.LoadScene(sceneToLoadName);

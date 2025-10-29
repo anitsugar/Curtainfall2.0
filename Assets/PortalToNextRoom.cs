@@ -36,15 +36,15 @@ public class PortalToNextRoom : MonoBehaviour
         {
             // Hereda elemento de Zona2
             var element = GameManager.Instance.GetZone2Element();
-            sceneToLoad = element == DropZoneUI.RoomElement.Light ? lightRoomScene :
-                          element == DropZoneUI.RoomElement.Dark ? darkRoomScene : "";
+            sceneToLoad = element == DropZoneUI.DungeonElement.Light ? lightRoomScene :
+                          element == DropZoneUI.DungeonElement.Dark ? darkRoomScene : "";
         }
         else if (zoneNumber == 2)
         {
             // Hereda elemento de Zona3
             var element = GameManager.Instance.GetZone3Element();
-            sceneToLoad = element == DropZoneUI.RoomElement.Light ? lightRoomScene :
-                          element == DropZoneUI.RoomElement.Dark ? darkRoomScene : "";
+            sceneToLoad = element == DropZoneUI.DungeonElement.Light ? lightRoomScene :
+                          element == DropZoneUI.DungeonElement.Dark ? darkRoomScene : "";
         }
         else if (zoneNumber >= 3)
         {
